@@ -17,7 +17,7 @@ const ignoreFiles = ["commitlint.config.cjs"];
 
 export default [
   ...(existsSync(gitignorePath) ? [includeIgnoreFile(gitignorePath)] : []),
-  ...ignoreFiles,
+  { ignores: ignoreFiles },
   { name: "js/config", ...js.configs.recommended },
   plugins.stylistic,
   plugins.importX,
