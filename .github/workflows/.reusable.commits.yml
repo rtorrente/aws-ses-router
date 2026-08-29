@@ -1,0 +1,35 @@
+name: "_INTERNAL_Global Commit"
+
+on:
+  workflow_call:
+
+jobs:
+  conventional-commit:
+    name: "Conventional Commit"
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - uses: actions/cache@v5
+        with:
+          path: ~/.npm
+          key: commitlint-${{ runner.os }}-v20
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Install commitlint
+        run: |
+          corepack disable
+          npm install --no-save @commitlint/cli@^20 @commitlint/config-conventional@^20
+      - name: CommitLint
+        run: |
+          if git cat-file -e "$FROM" 2>/dev/null; then
+            npx commitlint --from "$FROM" --to "$TO" --verbose
+          else
+            echo "::warning::FROM commit not reachable (force push?), linting HEAD only"
+            npx commitlint --from "HEAD~1" --to "HEAD" --verbose
+          fi
+        env:
+          FROM: ${{ github.event.pull_request.base.sha || github.event.before }}
+          TO: ${{ github.event.pull_request.head.sha || github.event.after }}

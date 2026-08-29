@@ -1,0 +1,17 @@
+name: "Pull Request"
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - develop
+    types: [opened, synchronize, reopened]
+
+jobs:
+  commitlint:
+    name: "[PR] Conventional Commits"
+    permissions:
+      contents: read
+      pull-requests: read
+    uses: ./.github/workflows/.reusable.commits.yml
