@@ -12,11 +12,11 @@ const gitignorePath = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   ".gitignore",
 );
-const ignoreFiles = existsSync(gitignorePath)
-  ? [includeIgnoreFile(gitignorePath)]
-  : [];
+
+const ignoreFiles = ["commitlint.config.cjs"];
 
 export default [
+  ...(existsSync(gitignorePath) ? [includeIgnoreFile(gitignorePath)] : []),
   ...ignoreFiles,
   { name: "js/config", ...js.configs.recommended },
   plugins.stylistic,

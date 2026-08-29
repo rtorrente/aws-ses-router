@@ -1,0 +1,14 @@
+name: "[DEVELOP] Workflow"
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  commitlint:
+    name: "[${{ github.ref_name }}] Conventional Commits"
+    permissions:
+      contents: read
+      pull-requests: read
+    uses: ./.github/workflows/.reusable.commits.yml
