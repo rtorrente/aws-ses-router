@@ -15,3 +15,9 @@ jobs:
       contents: read
       pull-requests: read
     uses: ./.github/workflows/.reusable.commits.yml
+
+  tests:
+    name: "[PR] Tests"
+    permissions:
+      contents: read
+    uses: ./.github/workflows/.reusable.tests.yml
