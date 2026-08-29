@@ -1,0 +1,18 @@
+name: "_INTERNAL_Global Tests"
+
+on:
+  workflow_call:
+
+jobs:
+  tests:
+    name: "Type Check & Lint"
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/setup@v2
+        with:
+          cache: true
+      - name: Type Check
+        run: pnpm ts:check
+      - name: Lint
+        run: pnpm eslint:check
