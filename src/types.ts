@@ -11,6 +11,7 @@ export interface SesHandlerConfig {
   emailBucket: string;
   emailKeyPrefix?: string;
   overrideForwardFrom?: string;
+  forwardConfigurationSetName?: string;
   deleteOnSuccess?: boolean;
   handlers: HandlerEntry[];
 }

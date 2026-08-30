@@ -1,0 +1,12 @@
+aws_region = "eu-west-3"
+
+inbound_domains = [
+  "example.com",
+]
+
+forward_from = "noreply@example.com"
+
+default_tags = {
+  Project   = "ses-inbound"
+  ManagedBy = "terraform"
+}

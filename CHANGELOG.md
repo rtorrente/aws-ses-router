@@ -1,3 +1,11 @@
+# [1.0.0-alpha.5](https://github.com/rtorrente/aws-ses-router/compare/v1.0.0-alpha.4...v1.0.0-alpha.5) (2026-08-30)
+
+
+### Features
+
+* allow setup configuration set for forward email ([352a913](https://github.com/rtorrente/aws-ses-router/commit/352a913dc66af4922602cd9291f4023bae64c1ba))
+* lambda pre-build release creation ([fc40e86](https://github.com/rtorrente/aws-ses-router/commit/fc40e86af4c1116e9ecbfa1379926cab2ef318e7))
+
 # [1.0.0-alpha.4](https://github.com/rtorrente/aws-ses-router/compare/v1.0.0-alpha.3...v1.0.0-alpha.4) (2026-08-30)
 
 
