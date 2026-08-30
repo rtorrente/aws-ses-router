@@ -4,7 +4,7 @@ import { logger } from "../utils/logger.js";
 
 import type { SESEventRecord } from "aws-lambda";
 
-import type { SesHandlerConfig } from "../types.js";
+import type { HandlerEntry, SesHandlerConfig } from "../types.js";
 
 const AUTO_REPLY_PATTERNS = [/^Auto-Submitted:\s*auto-replied\b/im];
 
@@ -28,8 +28,12 @@ export const processRecord = async (
   await Promise.all(
     receipt.recipients.map(async (recipient) => {
       const normalized = recipient.toLowerCase();
-      const domain = `@${normalized.split("@")[1] ?? ""}`;
-      const handler = config.handlers[normalized] ?? config.handlers[domain];
+      const entry = config.handlers.find(({ match }: HandlerEntry): boolean =>
+        typeof match === "string"
+          ? match === normalized
+          : match.test(normalized),
+      );
+      const handler = entry?.handler;
 
       if (isAutoReply(rawEmail)) {
         logger.info(
