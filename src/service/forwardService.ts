@@ -42,11 +42,13 @@ export const forwardEmail = async ({
   recipients,
   originalRecipient,
   overrideForwardFrom,
+  forwardConfigurationSetName,
 }: {
   rawEmail: string;
   recipients: string[];
   originalRecipient: string;
   overrideForwardFrom?: string;
+  forwardConfigurationSetName?: string;
 }): Promise<void> => {
   const separatorIndex = rawEmail.search(/\r?\n\r?\n/);
   if (separatorIndex === -1)
@@ -82,6 +84,9 @@ export const forwardEmail = async ({
       Destinations: recipients,
       RawMessage: { Data: Buffer.from(headers + body) },
       Source: sender,
+      ...(forwardConfigurationSetName && {
+        ConfigurationSetName: forwardConfigurationSetName,
+      }),
     }),
   );
   logger.debug(`[forward] Sent to [${recipients.join(", ")}]`);
