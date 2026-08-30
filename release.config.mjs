@@ -5,6 +5,7 @@ export default {
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
     "@semantic-release/changelog",
+    ["@semantic-release/exec", { prepareCmd: "pnpm build:lambda" }],
     "@semantic-release/npm",
     [
       "@semantic-release/git",
@@ -13,6 +14,16 @@ export default {
         message: `chore(release): \${nextRelease.version} [skip ci]\n\n\${nextRelease.notes}`,
       },
     ],
-    "@semantic-release/github",
+    [
+      "@semantic-release/github",
+      {
+        assets: [
+          {
+            path: "dist/lambda/lambda.zip",
+            label: "Lambda ZIP (lambda.zip)",
+          },
+        ],
+      },
+    ],
   ],
 };
