@@ -15,7 +15,7 @@ When SES receives an email, it stores the raw message in S3 and triggers a Lambd
 
 1. Fetches the raw email from S3 using the message ID
 2. Skips auto-replies automatically (`Auto-Submitted: auto-replied` header)
-3. Matches each recipient against your configured handlers (exact address, then `@domain` fallback)
+3. Matches each recipient against your configured handlers in order (first match wins)
 4. Either **forwards** the email to a list of addresses, calls your **custom handler**, or **ignores** it if the handler is `null`
 5. Optionally deletes the email from S3 after successful processing
 
@@ -58,21 +58,21 @@ export const handler = createSesLambdaHandler({
   overrideForwardFrom: 'noreply@example.com', // optional: override the From address when forwarding
   deleteOnSuccess: true,              // optional: delete the S3 object after processing
 
-  handlers: {
-    // Forward to one or more addresses
-    'hello@example.com': ['alice@gmail.com', 'bob@gmail.com'],
-
-    // Domain-level catch-all (matches any recipient @example.com not matched above)
-    '@example.com': ['team@gmail.com'],
+  handlers: [
+    // Forward to one or more addresses (exact match)
+    { match: 'hello@example.com', handler: ['alice@gmail.com', 'bob@gmail.com'] },
 
     // Custom handler -- receives the raw RFC 2822 email string
-    'support@example.com': async (rawEmail) => {
+    { match: 'support@example.com', handler: async (rawEmail) => {
       // parse, store, send to a webhook, etc.
-    },
+    }},
 
     // Explicitly ignore a recipient (no forwarding, no handler, no warning)
-    'noreply@example.com': null,
-  },
+    { match: 'noreply@example.com', handler: null },
+
+    // RegExp -- matches any recipient @example.com not matched above
+    { match: /@example\.com$/, handler: ['team@gmail.com'] },
+  ],
 });
 ```
 
@@ -84,10 +84,12 @@ interface SesHandlerConfig {
   emailKeyPrefix?: string;      // prepended to the message ID when fetching from S3
   overrideForwardFrom?: string; // SES-verified "From" address used when forwarding; falls back to the original recipient if omitted
   deleteOnSuccess?: boolean;    // delete the S3 object after all handlers succeed (default: false)
-  handlers: Record<
-    string,                     // 'user@domain.com' or '@domain.com'
-    string[] | EmailHandlerFn | null  // forward list, async function, or null to ignore
-  >;
+  handlers: HandlerEntry[];
+}
+
+interface HandlerEntry {
+  match: string | RegExp;             // exact address string or a regexp tested against the normalised recipient
+  handler: string[] | EmailHandlerFn | null; // forward list, async function, or null to ignore
 }
 
 type EmailHandlerFn = (rawEmail: string) => Promise<void>;
@@ -95,11 +97,13 @@ type EmailHandlerFn = (rawEmail: string) => Promise<void>;
 
 ### Handler matching order
 
-For each recipient, the handler lookup is:
+For each recipient, entries are tested **in array order** — the first match wins:
 
-1. Exact address match -- `'support@example.com'`
-2. Domain catch-all -- `'@example.com'`
+1. If `match` is a `string`, it must equal the normalised recipient address exactly
+2. If `match` is a `RegExp`, it is tested against the normalised recipient address
 3. No match -- logs a warning and skips
+
+Put more specific entries (exact addresses) before broader ones (regexps) to control priority.
 
 ### Handler values
 
