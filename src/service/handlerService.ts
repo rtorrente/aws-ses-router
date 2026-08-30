@@ -63,6 +63,7 @@ export const processRecord = async (
           recipients: handler,
           originalRecipient: recipient,
           overrideForwardFrom: config.overrideForwardFrom,
+          forwardConfigurationSetName: config.forwardConfigurationSetName,
         });
       } else {
         logger.info(
