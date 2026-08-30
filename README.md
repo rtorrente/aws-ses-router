@@ -23,10 +23,7 @@ When SES receives an email, it stores the raw message in S3 and triggers a Lambd
 
 ### Option 1 -- Pre-built Lambda ZIP (no npm needed)
 
-> **Coming soon** -- the pre-built `lambda.zip` will be available on the [GitHub Releases](../../releases) page. Stay tuned!
-
-<!--
-Download `lambda.zip` from the [GitHub Releases](../../releases) page and upload it directly to your Lambda function. Set the handler to `index.handler`.
+Download `lambda.zip` from the [GitHub Releases](../../releases) page and upload it directly to your Lambda function. Set the handler to `lambda.handler`.
 
 Set the following environment variables:
 
@@ -36,8 +33,7 @@ Set the following environment variables:
 | `FORWARD_FROM` | No | SES-verified sender address used when forwarding |
 | `LOG_LEVEL` | No | Log verbosity: `debug`, `info`, `warn`, `error` (default: `info`) |
 
-Configure your **routing rules** by editing the handler configuration directly in the AWS Lambda console code editor -- no local build step needed. The bundled `index.mjs` exposes a `config` object at the top of the file where you define your recipient-to-handler mappings.
--->
+Configure your **routing rules** by editing the handler configuration directly in the AWS Lambda console code editor — no local build step needed. The bundled `lambda.mjs` exposes a `config` object at the end of the file where you define your recipient-to-handler mappings.
 
 ### Option 2 -- npm library
 
@@ -182,7 +178,7 @@ pnpm install
 # Build both the Lambda zip and the npm library
 pnpm build
 
-# Lambda zip only (production, minified)
+# Lambda zip only (bundled + tree-shaken)
 pnpm build:lambda
 
 # npm library (TypeScript declarations + ESM)
