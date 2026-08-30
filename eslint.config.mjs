@@ -13,7 +13,7 @@ const gitignorePath = path.resolve(
   ".gitignore",
 );
 
-const ignoreFiles = ["commitlint.config.cjs"];
+const ignoreFiles = ["commitlint.config.cjs", "examples/**"];
 
 export default [
   ...(existsSync(gitignorePath) ? [includeIgnoreFile(gitignorePath)] : []),

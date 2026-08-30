@@ -4,11 +4,6 @@
 
 A lightweight AWS Lambda handler for **Amazon SES email receiving**. It fetches incoming emails from S3, routes them by recipient address or domain, and either forwards them via SES or passes the raw email to a custom handler function.
 
-This project can be used in two ways:
-
-- **As a ready-to-use Lambda** *(coming soon)* -- a pre-built `lambda.zip` will be available on the Releases page: upload it to AWS and configure routing directly in the Lambda console. No npm or build step needed.
-- **As an npm library** -- install it in your own Lambda project and call `createSesLambdaHandler()` with fully typed configuration and custom handler functions.
-
 ## How it works
 
 When SES receives an email, it stores the raw message in S3 and triggers a Lambda function. This library handles that Lambda invocation:
@@ -21,29 +16,13 @@ When SES receives an email, it stores the raw message in S3 and triggers a Lambd
 
 ## Installation
 
-### Option 1 -- Pre-built Lambda ZIP (no npm needed)
-
-Download `lambda.zip` from the [GitHub Releases](../../releases) page and upload it directly to your Lambda function. Set the handler to `lambda.handler`.
-
-Set the following environment variables:
-
-| Variable | Required | Description |
-|---|---|---|
-| `EMAIL_BUCKET` | Yes | S3 bucket where SES stores incoming emails |
-| `FORWARD_FROM` | No | SES-verified sender address used when forwarding |
-| `LOG_LEVEL` | No | Log verbosity: `debug`, `info`, `warn`, `error` (default: `info`) |
-
-Configure your **routing rules** by editing the handler configuration directly in the AWS Lambda console code editor — no local build step needed. The bundled `lambda.mjs` exposes a `config` object at the end of the file where you define your recipient-to-handler mappings.
-
-### Option 2 -- npm library
-
 ```bash
 npm install aws-ses-router
 # or
 pnpm add aws-ses-router
 ```
 
-## Usage (npm)
+## Usage
 
 ```ts
 import { createSesLambdaHandler } from 'aws-ses-router';
@@ -76,10 +55,11 @@ export const handler = createSesLambdaHandler({
 
 ```ts
 interface SesHandlerConfig {
-  emailBucket: string;          // S3 bucket name
-  emailKeyPrefix?: string;      // prepended to the message ID when fetching from S3
-  overrideForwardFrom?: string; // SES-verified "From" address used when forwarding; falls back to the original recipient if omitted
-  deleteOnSuccess?: boolean;    // delete the S3 object after all handlers succeed (default: false)
+  emailBucket: string;                   // S3 bucket name
+  emailKeyPrefix?: string;               // prepended to the message ID when fetching from S3
+  overrideForwardFrom?: string;          // SES-verified "From" address used when forwarding; falls back to the original recipient if omitted
+  forwardConfigurationSetName?: string;  // SES configuration set name attached to forwarded emails
+  deleteOnSuccess?: boolean;             // delete the S3 object after all handlers succeed (default: false)
   handlers: HandlerEntry[];
 }
 
@@ -134,6 +114,13 @@ const handler: EmailHandlerFn = async (rawEmail) => {
 };
 ```
 
+## Examples
+
+Ready-to-use examples are available in the [`examples/`](./examples) directory:
+
+- [`terraform-custom-lambda`](./examples/terraform-custom-lambda) — Terraform deployment with a custom Lambda (TypeScript + esbuild) using basic forward rules
+- [`custom-lambda-custom-handler`](./examples/custom-lambda-custom-handler) — Lambda code demonstrating a custom handler that posts raw emails to an [osTicket](https://osticket.com) instance
+
 ## AWS setup
 
 Your Lambda execution role needs the following permissions:
@@ -184,8 +171,6 @@ pnpm build:lambda
 # npm library (TypeScript declarations + ESM)
 pnpm build:lib
 ```
-
-The Lambda build outputs `dist/lambda.zip` containing a single bundled `index.mjs`.
 
 ## Requirements
 

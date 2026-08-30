@@ -1,0 +1,9 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+terraform.tfvars
+!terraform.tfvars.example
+builds/
+lambda/node_modules/
+lambda/dist/
