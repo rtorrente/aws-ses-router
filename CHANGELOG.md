@@ -1,3 +1,10 @@
+## [1.0.1-alpha.1](https://github.com/rtorrente/aws-ses-router/compare/v1.0.0...v1.0.1-alpha.1) (2026-09-02)
+
+
+### Bug Fixes
+
+* skip DSN and ARF reports to prevent forwarding bounce and complaint emails ([f1f7968](https://github.com/rtorrente/aws-ses-router/commit/f1f796810bcd12034c8ad23942c241e35e207e9e))
+
 # 1.0.0 (2026-08-30)
 
 
