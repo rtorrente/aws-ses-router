@@ -8,15 +8,16 @@ import type { HandlerEntry, SesHandlerConfig } from "../types.js";
 
 const SKIP_PATTERNS = [
   /^Auto-Submitted:\s*auto-replied\b/im,
-  /^Content-Type:\s*multipart\/report;\s*report-type=delivery-status\b/im,
-  /^Content-Type:\s*multipart\/report;\s*report-type=feedback-report\b/im,
+  /^Content-Type:[^\n]*\breport-type=delivery-status\b/im,
+  /^Content-Type:[^\n]*\breport-type=feedback-report\b/im,
 ];
 
 const shouldSkip = (rawEmail: string): boolean => {
   const separatorIndex = rawEmail.search(/\r?\n\r?\n/);
   const headers =
     separatorIndex === -1 ? rawEmail : rawEmail.slice(0, separatorIndex);
-  return SKIP_PATTERNS.some((pattern) => pattern.test(headers));
+  const unfolded = headers.replace(/\r?\n[ \t]+/g, " ");
+  return SKIP_PATTERNS.some((pattern) => pattern.test(unfolded));
 };
 
 export const processRecord = async (
