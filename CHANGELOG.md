@@ -1,3 +1,20 @@
+# 1.0.0 (2026-08-30)
+
+
+### Bug Fixes
+
+* add auto changelog on semantic release ([01096d1](https://github.com/rtorrente/aws-ses-router/commit/01096d1a03d81eb7ce95e173fa944b67d27e4e46))
+* eslint ignore failed ([1cce794](https://github.com/rtorrente/aws-ses-router/commit/1cce794ddf16b7a56b80901309dd2da06801077c))
+* missing git push after release ([8de11a2](https://github.com/rtorrente/aws-ses-router/commit/8de11a276ba60f0d2aeb2d17a52439765369602c))
+
+
+### Features
+
+* add semantic release ([7a615d8](https://github.com/rtorrente/aws-ses-router/commit/7a615d83ce42d6bba0518cf734f4838971e52f70))
+* allow setup configuration set for forward email ([aa93c50](https://github.com/rtorrente/aws-ses-router/commit/aa93c506c60f0a39676012d31bbeb0405d68653f))
+* export forwardEmail for lib users ([573dddf](https://github.com/rtorrente/aws-ses-router/commit/573dddff884d424e3ac5a0bed507ac7d7c501970))
+* lambda pre-build release creation ([d4b5127](https://github.com/rtorrente/aws-ses-router/commit/d4b5127b89b1de447990a9615b3320f3a4e4c85f))
+
 # [1.0.0-alpha.5](https://github.com/rtorrente/aws-ses-router/compare/v1.0.0-alpha.4...v1.0.0-alpha.5) (2026-08-30)
 
 
