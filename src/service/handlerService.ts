@@ -6,13 +6,17 @@ import type { SESEventRecord } from "aws-lambda";
 
 import type { HandlerEntry, SesHandlerConfig } from "../types.js";
 
-const AUTO_REPLY_PATTERNS = [/^Auto-Submitted:\s*auto-replied\b/im];
+const SKIP_PATTERNS = [
+  /^Auto-Submitted:\s*auto-replied\b/im,
+  /^Content-Type:\s*multipart\/report;\s*report-type=delivery-status\b/im,
+  /^Content-Type:\s*multipart\/report;\s*report-type=feedback-report\b/im,
+];
 
-const isAutoReply = (rawEmail: string): boolean => {
+const shouldSkip = (rawEmail: string): boolean => {
   const separatorIndex = rawEmail.search(/\r?\n\r?\n/);
   const headers =
     separatorIndex === -1 ? rawEmail : rawEmail.slice(0, separatorIndex);
-  return AUTO_REPLY_PATTERNS.some((pattern) => pattern.test(headers));
+  return SKIP_PATTERNS.some((pattern) => pattern.test(headers));
 };
 
 export const processRecord = async (
@@ -35,9 +39,9 @@ export const processRecord = async (
       );
       const handler = entry?.handler;
 
-      if (isAutoReply(rawEmail)) {
+      if (shouldSkip(rawEmail)) {
         logger.info(
-          `[ses-handler] Skipping auto-reply ${mail.messageId} for ${recipient}`,
+          `[ses-handler] Skipping automated message ${mail.messageId} for ${recipient}`,
         );
         return;
       }
