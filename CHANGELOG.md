@@ -1,3 +1,10 @@
+## [1.0.1-alpha.2](https://github.com/rtorrente/aws-ses-router/compare/v1.0.1-alpha.1...v1.0.1-alpha.2) (2026-09-02)
+
+
+### Bug Fixes
+
+* unfold headers before pattern matching to handle multi-line Content-Type ([6d3d8bf](https://github.com/rtorrente/aws-ses-router/commit/6d3d8bf73c5f05afa6e63dc83d4b0b306f2d7df0))
+
 ## [1.0.1-alpha.1](https://github.com/rtorrente/aws-ses-router/compare/v1.0.0...v1.0.1-alpha.1) (2026-09-02)
 
 
